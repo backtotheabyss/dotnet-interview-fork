@@ -1,6 +1,6 @@
 namespace TodoApi.Dtos;
 
-public class CreateTodoListItem
+public class UpdateTodoListItem
 {
     // public long ItemId { get; set; }
     public string Name { get; set; }

@@ -143,7 +143,7 @@ namespace TodoApi.Controllers
         }
 
         [HttpPut("Item")]
-        public async Task<IActionResult> PutTodoListItem([FromQuery, Required] long id, [FromQuery, Required] long itemId, CreateTodoListItem payload)
+        public async Task<IActionResult> PutTodoListItem([FromQuery, Required] long id, [FromQuery, Required] long itemId, UpdateTodoListItem payload)
         {
             // var todoList = new TodoList { Name = payload.Name };
             TodoList todoList = new TodoList() { Name = payload.Name };
