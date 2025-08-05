@@ -37,14 +37,16 @@ namespace TodoApi.Controllers
             // var todoList = await _context.TodoList.FindAsync(id);
 
             TodoList todoList = new TodoList() { Name = string.Empty };
-            todoList = await _context.TodoList.FindAsync(id);
+            
+            todoList = await _context.TodoList
+            .Include(t => t.Items)
+            .FirstOrDefaultAsync(t => t.Id == id);
 
-            if (todoList == null)
-            {
-                return NotFound();
-            }
+                if (todoList == null)                
+                    return NotFound();
+                
 
-            return Ok(todoList);
+                return Ok(todoList);
         }
 
         // PUT: api/todolists/5

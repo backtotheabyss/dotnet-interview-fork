@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Controllers;
 using TodoApi.Models;
+using TodoApi.Dtos;
 
 namespace TodoApi.Tests;
 
@@ -27,12 +28,14 @@ public class TodoListsControllerTests
     {
         using (var context = new TodoContext(DatabaseContextOptions()))
         {
-            PopulateDatabaseContext(context);
-
+            // Arrange
+            PopulateDatabaseContext(context);            
             var controller = new TodoListsController(context);
 
+            // Act
             var result = await controller.GetTodoLists();
 
+            // Assert
             Assert.IsType<OkObjectResult>(result.Result);
             Assert.Equal(2, ((result.Result as OkObjectResult).Value as IList<TodoList>).Count);
         }
@@ -50,7 +53,7 @@ public class TodoListsControllerTests
             var result = await controller.GetTodoList(1);
 
             Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(1, ((result.Result as OkObjectResult).Value as TodoList).Id);
+            Assert.Equal(1, ((result.Result as OkObjectResult).Value as TodoList).Id);            
         }
     }
 
@@ -97,11 +100,11 @@ public class TodoListsControllerTests
         using (var context = new TodoContext(DatabaseContextOptions()))
         {
             PopulateDatabaseContext(context);
-
+            
             var controller = new TodoListsController(context);
 
             var result = await controller.PostTodoList(new Dtos.CreateTodoList { Name = "Task 3" });
-
+            
             Assert.IsType<CreatedAtActionResult>(result.Result);
             Assert.Equal(3, context.TodoList.Count());
         }
