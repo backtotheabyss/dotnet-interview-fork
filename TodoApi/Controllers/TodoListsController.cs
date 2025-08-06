@@ -26,7 +26,6 @@ namespace TodoApi.Controllers
                 .ToListAsync();            
                         
             return Ok(todoLists);
-
             // return Ok(await _context.TodoList.ToListAsync()); 
         }
 
@@ -39,14 +38,13 @@ namespace TodoApi.Controllers
             TodoList todoList = new TodoList() { Name = string.Empty };
             
             todoList = await _context.TodoList
-            .Include(t => t.Items)
-            .FirstOrDefaultAsync(t => t.Id == id);
+                .Include(t => t.Items)
+                .FirstOrDefaultAsync(t => t.Id == id);
 
-                if (todoList == null)                
-                    return NotFound();
-                
+            if (todoList == null)                
+                return NotFound();                
 
-                return Ok(todoList);
+            return Ok(todoList);
         }
 
         // PUT: api/todolists/5
@@ -72,7 +70,8 @@ namespace TodoApi.Controllers
         [HttpPost]
         public async Task<ActionResult<TodoList>> PostTodoList(CreateTodoList payload)
         {
-            var todoList = new TodoList { Name = payload.Name };
+            // var todoList = new TodoList { Name = payload.Name };
+            TodoList todoList = new TodoList { Name = payload.Name };
 
             _context.TodoList.Add(todoList);
             await _context.SaveChangesAsync();
@@ -114,6 +113,7 @@ namespace TodoApi.Controllers
             todoList = await _context.TodoList
                 .Include(t => t.Items)
                 .FirstOrDefaultAsync(t => t.Id == id);
+            // todoList = await _context.TodoList.FindAsync(id);
 
             if (todoList == null)
             {
@@ -147,9 +147,12 @@ namespace TodoApi.Controllers
         {
             // var todoList = new TodoList { Name = payload.Name };
             TodoList todoList = new TodoList() { Name = payload.Name };
-            todoList = await _context.TodoList
-                .Include(t => t.Items)
-                .FirstOrDefaultAsync(t => t.Id == id);
+            todoList = await _context.TodoList.FindAsync(id);
+                /* .Include(t => t.Items)
+                .FirstOrDefaultAsync(t => t.Id == id); */
+
+            if (todoList == null)
+                return NotFound();
 
             TodoListItem todoListItem = await _context.TodoListItems
                 .FirstOrDefaultAsync(i => i.Id == id && i.ItemId == itemId);
@@ -170,9 +173,12 @@ namespace TodoApi.Controllers
         {
             // var todoList = new TodoList { Name = payload.Name };
             TodoList todoList = new TodoList() { Name = string.Empty };
-            todoList = await _context.TodoList
-                .Include(t => t.Items)
-                .FirstOrDefaultAsync(t => t.Id == id);
+            todoList = await _context.TodoList.FindAsync(id);
+                /* .Include(t => t.Items)
+                .FirstOrDefaultAsync(t => t.Id == id); */
+
+            if (todoList == null)
+                return NotFound();
 
             var todoListItem = await _context.TodoListItems
                 .FirstOrDefaultAsync(i => i.Id == id && i.ItemId == itemId);
@@ -184,6 +190,22 @@ namespace TodoApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("Item")]
+        public async Task<ActionResult<TodoList>> GetTodoListItem([FromQuery, Required] long id, [FromQuery, Required] long itemId)
+        {
+            // var todoList = await _context.TodoList.FindAsync(id);
+
+            TodoListItem todoListItem = new TodoListItem() { ItemId = 0, Id = 0 };
+
+            todoListItem = await _context.TodoListItems
+                .FirstOrDefaultAsync(i => i.Id == id && i.ItemId == itemId);
+
+            if (todoListItem == null)
+                return NotFound();
+
+            return Ok(todoListItem);
         }
     }
 }
